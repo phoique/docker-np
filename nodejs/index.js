@@ -1,5 +1,25 @@
 const express = require("express");
+const mysql = require("mysql");
 const app = express();
+
+// Express body parser.
+app.use(
+  express.json(),
+  express.urlencoded({ extended: false })
+);
+
+// Mysql conn
+let conn = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "example"
+});
+
+// if there is an error in mysql conn
+conn.connect((err) => {
+  if(err) throw err;
+});
 
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -7,5 +27,53 @@ app.get("/", (req, res) => {
     desc: "Node.js Web Service"
   });
 });
+
+app.post("/message/add", (req, res) => {
+
+  var main_response = {
+    status: false,
+    desc: "",
+    result: []
+  };
+
+  if(req.body.message === undefined) {
+    main_response = {status: false, desc: "message cannot be empty."};
+    return res.status(400).json(main_response);
+  }
+
+  // Create table query
+  var createTableSql = `CREATE TABLE IF NOT EXISTS messages(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    message VARCHAR(50) NOT NULL
+    )`;
+
+  // Create table
+  conn.query(createTableSql, (err, result) => {
+    if(err) {
+      main_response = {status: false, desc: "table could not be created"};
+      return res.json(main_response);
+    }
+  });
+
+  // add message query
+  var addMessageSql = `INSERT INTO messages SET ?;`;
+  var messageData = {message: req.body.message};
+
+  // add message
+  conn.query(addMessageSql, messageData, (err, result) => {
+
+    if(err) {
+      main_response = {status: false, desc: "Message could not be added"};
+      return res.json(main_response);
+    }
+    else {
+      main_response = {status: true, desc: "Message added", result: true};
+      return res.status(201).json(main_response);
+    }
+
+  });
+
+});
+
 
 app.listen(3000, () => console.log("Node.js Web Service - 3000"));
