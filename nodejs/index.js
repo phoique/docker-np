@@ -28,6 +28,7 @@ app.get("/", (req, res) => {
   });
 });
 
+// Message add endpoint
 app.post("/message/add", (req, res) => {
 
   var main_response = {
@@ -37,7 +38,7 @@ app.post("/message/add", (req, res) => {
   };
 
   if(req.body.message === undefined) {
-    main_response = {status: false, desc: "message cannot be empty."};
+    main_response = {status: false, desc: "message cannot be empty!"};
     return res.status(400).json(main_response);
   }
 
@@ -50,7 +51,7 @@ app.post("/message/add", (req, res) => {
   // Create table
   conn.query(createTableSql, (err, result) => {
     if(err) {
-      main_response = {status: false, desc: "table could not be created"};
+      main_response = {status: false, desc: "table could not be created."};
       return res.json(main_response);
     }
   });
@@ -63,14 +64,46 @@ app.post("/message/add", (req, res) => {
   conn.query(addMessageSql, messageData, (err, result) => {
 
     if(err) {
-      main_response = {status: false, desc: "Message could not be added"};
+      main_response = {status: false, desc: "Message could not be added!"};
       return res.json(main_response);
     }
     else {
-      main_response = {status: true, desc: "Message added", result: true};
+      main_response = {status: true, desc: "Message added.", result: true};
       return res.status(201).json(main_response);
     }
 
+  });
+
+});
+
+// all messages endpoint
+app.get("/messages", (req, res) => {
+
+  var main_response = {
+    status: false,
+    desc: "",
+    result: []
+  };
+
+  // Create table query
+  var getMessagesSql = `SELECT * FROM messages LIMIT 100`;
+
+  // Create table
+  conn.query(getMessagesSql, (err, result) => {
+    if(err) {
+      main_response = {status: false, desc: "An error occurred."};
+      return res.json(main_response);
+    }
+    else {
+      if(result.length > 0) {
+        main_response = {status: true, desc: "messages listed.", result};
+        return res.status(200).json(main_response);
+      }
+      else {
+        main_response = {status: true, desc: "messages not found!", result};
+        return res.status(404).json(main_response);
+      }
+    }
   });
 
 });
