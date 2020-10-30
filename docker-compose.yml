@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+
     nodejs_service:
         build: 
             context: ./nodejs
@@ -9,6 +10,29 @@ services:
             - webservice
         ports: 
             - 3000:3000
+
+    php_service:
+        build: 
+            context: ./php
+            dockerfile: DockerFile
+        networks: 
+            - webservice
+        ports: 
+            - 9000:9000
+    
+    nginx:
+        image: nginx:alpine
+        ports:
+            - "80:80"
+        volumes:
+            - ./nginx:/etc/nginx/conf.d
+        networks:
+            - webservice
+        depends_on: 
+            - php_service    
+        links: 
+            - php_service    
+
 
 networks:
     webservice:
