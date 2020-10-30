@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+    nodejs_service:
+        build: 
+            context: ./nodejs
+            dockerfile: DockerFile
+        networks: 
+            - webservice
+        ports: 
+            - 3000:3000
+
+networks:
+    webservice:
