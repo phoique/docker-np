@@ -1,32 +1,69 @@
 <?php
   header("Content-Type: application/json");
 
-  try {
-    $db = new PDO("mysql:host=localhost;dbname=example;charset=utf8", "root", "");
-  
-    $sql ="CREATE table messages(
-      ID INT( 11 ) AUTO_INCREMENT PRIMARY KEY,
-      message VARCHAR( 50 ) NOT NULL
-      );" ;
+  // php json body parse
+  $body = json_decode(file_get_contents('php://input'), true);
+
+  $main_response = array(
+    "status" => false,
+    "desc" => "",
+    "result" => []
+  );
+
+  if(isset($body['message'])) {
+
+    // mysql conn
+    try {
+      $db = new PDO("mysql:host=localhost;dbname=example;charset=utf8", "root", "");
     
-    $db->exec($sql);
-
-  } catch ( PDOException $e ){
-    echo json_encode(array(
-      "status" => false,
-      "desc" => "An error occurred!",
-      "error" => $e->getMessage()
-    ));
-  }
-
-  $query = $db->prepare("INSERT INTO messages SET message = ?");
-  $insert = $query->execute(array("Tayfun Erbilen"));
+      // create table
+      $sql ="CREATE table messages(
+        ID INT( 11 ) AUTO_INCREMENT PRIMARY KEY,
+        message VARCHAR( 50 ) NOT NULL
+        );";
+      
+      $db->exec($sql);
   
-  if ( $insert ){
-      $last_id = $db->lastInsertId();
-      print "insert işlemi başarılı!";
+    } catch (PDOException $e){
+
+      $main_response = array(
+        "status" => false,
+        "desc" => "An error occurred!",
+        "error" => $e->getMessage()
+      );
+
+      echo json_encode($main_response);
+    }
+  
+    // insert message
+    $query = $db->prepare("INSERT INTO messages SET message = ?");
+    $insert = $query->execute(array($body['message']));
+    
+    if ($insert) {
+      $main_response = array(
+        "status" => false,
+        "desc" => "Message added.",
+        "result" => true
+      );
+
+      echo json_encode($main_response);
+    }
+    else {
+      $main_response = array(
+        "status" => false,
+        "desc" => "Message could not be added!",
+      );
+
+      echo json_encode($main_response);
+    }
+
+  }
+  else {
+    $main_response = array(
+      "status" => false,
+      "desc" => "message cannot be empty!"
+    );
+    echo json_encode($main_response);
   }
   
 ?>
-
-
