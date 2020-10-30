@@ -8,19 +8,6 @@ app.use(
   express.urlencoded({ extended: false })
 );
 
-// Mysql conn
-let conn = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "example"
-});
-
-// if there is an error in mysql conn
-conn.connect((err) => {
-  if(err) throw err;
-});
-
 app.get("/", (req, res) => {
   res.status(200).json({
     status: true,
@@ -30,6 +17,19 @@ app.get("/", (req, res) => {
 
 // Message add endpoint
 app.post("/message/add", (req, res) => {
+
+  // Mysql conn
+  let conn = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "example"
+  });
+
+  // if there is an error in mysql conn
+  conn.connect((err) => {
+    if(err) throw err;
+  });
 
   var main_response = {
     status: false,
@@ -78,6 +78,19 @@ app.post("/message/add", (req, res) => {
 
 // all messages endpoint
 app.get("/messages", (req, res) => {
+
+  // Mysql conn
+  let conn = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "example"
+  });
+
+  // if there is an error in mysql conn
+  conn.connect((err) => {
+    if(err) throw err;
+  });
 
   var main_response = {
     status: false,
