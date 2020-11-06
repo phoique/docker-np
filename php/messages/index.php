@@ -29,7 +29,7 @@
   
   if ($query) {
     $main_response = array(
-      "status" => false,
+      "status" => true,
       "desc" => "Messages listed.",
       "result" => $result
   );
