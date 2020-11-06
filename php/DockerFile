@@ -1,4 +1,5 @@
 FROM php:7.4-fpm-alpine
 WORKDIR /var/www/phpapp
+RUN docker-php-ext-install pdo_mysql
 COPY . .
 EXPOSE 9000

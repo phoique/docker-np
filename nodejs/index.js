@@ -20,10 +20,12 @@ app.post("/message/add", (req, res) => {
 
   // Mysql conn
   let conn = mysql.createConnection({
-    host: "localhost",
+    host: "database_mysql",
     user: "root",
-    password: "",
-    database: "example"
+    password: "password1",
+    database: "example",
+    port: "3306",
+    insecureAuth : true
   });
 
   // if there is an error in mysql conn
@@ -81,10 +83,12 @@ app.get("/messages", (req, res) => {
 
   // Mysql conn
   let conn = mysql.createConnection({
-    host: "localhost",
+    host: "database_mysql",
     user: "root",
-    password: "",
-    database: "example"
+    password: "password1",
+    database: "example",
+    port: "3306",
+    insecureAuth : true
   });
 
   // if there is an error in mysql conn

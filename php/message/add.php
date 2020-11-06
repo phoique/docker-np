@@ -14,7 +14,7 @@
 
     // mysql conn
     try {
-      $db = new PDO("mysql:host=localhost;dbname=example;charset=utf8", "root", "");
+      $db = new PDO("mysql:host=database_mysql;dbname=example;charset=utf8", "root", "password1");
     
       // create table
       $sql ="CREATE table messages(
